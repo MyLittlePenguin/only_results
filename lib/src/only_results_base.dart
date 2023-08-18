@@ -5,6 +5,14 @@ sealed class Result<O, E> {
   bool isErr();
   bool isOk();
 
+  static Result<O, Object> catchErrors<O>(O Function() fn) {
+    try {
+      return Ok(fn());
+    } catch (e) {
+      return Err(e);
+    }
+  }
+
   O expect(String msg);
   O unwrap();
   O unwrapOr(O defaultValue);
