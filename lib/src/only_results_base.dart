@@ -2,9 +2,6 @@
 /// errors visible by returning a [Result]. It also provides methods to handle 
 /// it. This library is an incomplete dart implementation of rusts results.
 sealed class Result<O, E> {
-  bool isErr();
-  bool isOk();
-
   static Result<O, Object> catchErrors<O>(O Function() fn) {
     try {
       return Ok(fn());
@@ -12,6 +9,9 @@ sealed class Result<O, E> {
       return Err(e);
     }
   }
+
+  bool isErr();
+  bool isOk();
 
   O expect(String msg);
   O unwrap();
