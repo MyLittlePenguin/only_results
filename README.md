@@ -11,29 +11,47 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages). 
 -->
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+This package is yet another Rust like Result implementation. 
+There are already several others and they are basically all the same.
+This isn't much different. Just pick one you like.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+The Features include the basic functions you would expect:
+
+- expect 
+- unwrap
+- unwrapOr
+- andThen
+- orElse
+
+These functions also exist as extension Functions for Futures of Results for Convenience reasons.
+
+One thing that is special about this implementation, is that you can use the andThen
+and orElse functions to convert a result to a slightly different one. 
+This can be usefull wenn you have multiple function calls in one function that return 
+different Results. For more details on that have a look at the examples.
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+```dart
+import "package:only_results/only_results.dart";
+
+var result = Result.catchErrors(() => unsafeFunction());
+
+switch(result) {
+    case Ok(:void value): 
+        print("it worked =)");
+    case Err(:Object error): 
+        print("=( $error");
+}
+
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
 
-```dart
-const like = 'sample';
-```
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+If you want to see more examples, have a look at the tests.
