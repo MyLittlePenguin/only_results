@@ -1,40 +1,51 @@
 import 'package:only_results/only_results.dart';
 import 'package:test/test.dart';
 
+late Future<Result<int, String>> ok;
+late Future<Result<int, String>> err;
+
 void main() {
   group("test Future Results", extensionTests);
 }
 
 void extensionTests() {
-  test("test Future expect", testExpect);
-  test("test Future unwrap", testUnwrap);
+  setUp(setTestsUp);
+  test("test Future expectAsync", testExpect);
+  test("test Future unwrapAsync", testUnwrap);
+  test("test Future unwrapOrAsync", testUnwrapOrAsync);
+}
+
+void setTestsUp() {
+  ok = Future.value(Ok(42));
+  err = Future.value(Err("fooo"));
 }
 
 Future<void> testExpect() async {
-  Future<Result<int, String>> result = Future.value(Ok(42));
-  expect(await result.expectAsync("foooo"), 42);
+  expect(await ok.expectAsync("bar"), 42);
 
-  result = Future.value(Err("mäh"));
   late String exceptionString;
   try {
-    await result.expectAsync("fooo");
+    await err.expectAsync("bar");
   } catch (e) {
     exceptionString = e.toString();
   }
-  expect(exceptionString, "Exception: fooo");
+  expect(exceptionString, "Exception: bar");
 }
 
 Future<void> testUnwrap() async {
-  Future<Result<int, String>> result = Future.value(Ok(42));
-  expect(await result.unwrapAsync(), 42);
+  expect(await ok.unwrapAsync(), 42);
 
-  result = Future.value(Err("mäh"));
   late String exceptionString;
   try {
-    await result.unwrapAsync();
+    await err.unwrapAsync();
   } catch (e) {
     exceptionString = e.toString();
   }
 
-  expect(exceptionString, "Exception: mäh");
+  expect(exceptionString, "Exception: fooo");
+}
+
+Future<void> testUnwrapOrAsync() async {
+  expect(await ok.unwrapOrAsync(21), 42);
+  expect(await err.unwrapOrAsync(21), 21);
 }

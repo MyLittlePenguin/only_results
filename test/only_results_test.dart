@@ -1,8 +1,12 @@
 import 'package:only_results/only_results.dart';
 import 'package:test/test.dart';
 
+late Result<int, String> ok;
+late Result<int, String> err;
+
 void main() {
   group("test Results", () {
+    setUp(setTestsUp);
     test("test Result.catchErrors", testCatchErrorsOnStateError);
     test("test Ok.expect", testExpectOk);
     test("test Err.expect", testExpectErr);
@@ -17,8 +21,18 @@ void main() {
   });
 }
 
+void setTestsUp() {
+  ok = Ok(42);
+  err = Err("Foo");
+}
+
 void testCatchErrorsOnStateError() {
-  var result = Result.catchErrors(() => <int>[].firstWhere((it) => it == 42));
+  var result = Result.catchErrors(() => [1,2,3].firstWhere((it) => it == 2));
+  expect(result.isOk(), true);
+  expect(result.isErr(), false);
+  expect(result.unwrap(), 2);
+
+  result = Result.catchErrors(() => <int>[].firstWhere((it) => it == 42));
 
   expect(result.isErr(), true);
   expect(result.runtimeType.toString(), "Err<int, Object>");
@@ -26,17 +40,14 @@ void testCatchErrorsOnStateError() {
 }
 
 void testExpectOk() {
-  Result<int, String> result = Ok(42);
-
-  expect(result.expect("irrelevant string"), 42);
+  expect(ok.expect("irrelevant string"), 42);
 }
 
 void testExpectErr() {
-  Result<int, String> result = Err("Some Error");
 
   late Exception exception;
   try {
-    result.expect("ALARM!!!");
+    err.expect("ALARM!!!");
   } catch (e) {
     exception = e as Exception;
   }
@@ -44,17 +55,13 @@ void testExpectErr() {
 }
 
 void testUnwrapOk() {
-  Result<int, String> result = Ok(42);
-
-  expect(result.unwrap(), 42);
+  expect(ok.unwrap(), 42);
 }
 
 void testUnwrapErr() {
-  Result<int, String> result = Err("Foo");
-
   late Exception exception;
   try {
-    result.unwrap();
+    err.unwrap();
   } catch(e) {
     exception = e as Exception;
   }
@@ -72,45 +79,41 @@ void testIsErr() {
 }
 
 void testUnwrapOrOk() {
-  var result = Ok(42);
-  expect(result.unwrapOr(21), 42);
+  expect(ok.unwrapOr(21), 42);
 }
 
 void testUnwrapOrErr() {
-  var result = Err<int, String>("Foo");
-  expect(result.unwrapOr(21), 21);
+  expect(err.unwrapOr(21), 21);
 }
 
 void testAndThen() {
-  Result<int, String> result = Ok(21);
-  var result2 = result.andThen((ok) => Ok(ok * 2));
+  var result = ok.andThen((ok) => Ok(ok * 2));
 
-  expect(result2.unwrap(), 42);
-  expect(result2.runtimeType, Ok<int, String>);
+  expect(result.unwrap(), 84);
+  expect(result.runtimeType, Ok<int, String>);
 
-  var result3 = result2.andThen((ok) => Ok(ok.toDouble()));
+  var result2 = ok.andThen((ok) => Ok(ok.toDouble()));
 
-  expect(result3.unwrap(), 42.0);
-  expect(result3.runtimeType, Ok<double, String>);
+  expect(result2.unwrap(), 42.0);
+  expect(result2.runtimeType, Ok<double, String>);
 
-  var result4 = Err<int, String>("Foo");
+  var result3 = Err<int, String>("Foo");
 
-  expect(result4.unwrapOr(42), 42);
-  expect(result4.runtimeType, Err<int, String>);
+  expect(result3.unwrapOr(42), 42);
+  expect(result3.runtimeType, Err<int, String>);
 }
 
 void testOrElse() {
-  Result<int, String> result = Err("Foo");
-  var result2 = result.orElse((err) => Ok(42));
+  var result = err.orElse((err) => Ok(42));
 
-  expect(result2.unwrap(), 42);
-  expect(result2.runtimeType, Ok<int, dynamic>);
+  expect(result.unwrap(), 42);
+  expect(result.runtimeType, Ok<int, dynamic>);
 
-  var result3 = result.orElse((err) => Err(21));
+  var result2 = err.orElse((err) => Err(21));
 
-  expect((result3 as Err<int, int>).error, 21);
-  expect(result3.runtimeType, Err<int, int>);
+  expect((result2 as Err<int, int>).error, 21);
+  expect(result2.runtimeType, Err<int, int>);
 
-  var result4 = Ok<int, String>(42).orElse((err) => Ok(21));
-  expect(result4.unwrap(), 42);
+  var result3 = Ok<int, String>(42).orElse((err) => Ok(21));
+  expect(result3.unwrap(), 42);
 }
