@@ -12,12 +12,12 @@ void extensionTests() {
 
 Future<void> testExpect() async {
   Future<Result<int, String>> result = Future.value(Ok(42));
-  expect(await result.expect("foooo"), 42);
+  expect(await result.expectAsync("foooo"), 42);
 
   result = Future.value(Err("mäh"));
   late String exceptionString;
   try {
-    await result.expect("fooo");
+    await result.expectAsync("fooo");
   } catch (e) {
     exceptionString = e.toString();
   }
@@ -26,12 +26,12 @@ Future<void> testExpect() async {
 
 Future<void> testUnwrap() async {
   Future<Result<int, String>> result = Future.value(Ok(42));
-  expect(await result.unwrap(), 42);
+  expect(await result.unwrapAsync(), 42);
 
   result = Future.value(Err("mäh"));
   late String exceptionString;
   try {
-    await result.unwrap();
+    await result.unwrapAsync();
   } catch (e) {
     exceptionString = e.toString();
   }

@@ -1,7 +1,6 @@
 import 'package:only_results/only_results.dart';
 import 'package:test/test.dart';
 
-
 void main() {
   group("test Results", () {
     test("test Result.catchErrors", testCatchErrorsOnStateError);
