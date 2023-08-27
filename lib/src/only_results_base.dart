@@ -2,6 +2,8 @@
 /// errors visible by returning a [Result]. It also provides methods to handle 
 /// it. This library is an incomplete dart implementation of rusts results.
 sealed class Result<O, E> {
+  /// Wraps the return value of [fn] into an [Ok]. If fn throws an [Excpetion] or [Error] it is
+  /// wrapped into an [Err].
   static Result<O, Object> catchErrors<O>(O Function() fn) {
     try {
       return Ok(fn());
@@ -13,8 +15,16 @@ sealed class Result<O, E> {
   bool isErr();
   bool isOk();
 
+  /// Returns the [value] if this [Result] is an [Ok]. If it is an [Err] it throws
+  /// with the [msg] as message.
   O expect(String msg);
+
+  /// Returns the [value] of an [Ok] object. If it is an [Err] object intead, it throws 
+  /// an Exception with the [error] as the message that is wrapped by the [Err].
   O unwrap();
+
+  /// Returns the [value] of an [Ok] object. If it is an [Err] object, the defaultValue
+  /// is returned instead.
   O unwrapOr(O defaultValue);
 
   Result<O2, E> andThen<O2>(Result<O2, E> Function(O ok) fn);
