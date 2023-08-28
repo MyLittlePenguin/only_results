@@ -27,7 +27,13 @@ sealed class Result<O, E> {
   /// is returned instead.
   O unwrapOr(O defaultValue);
 
+  /// If this [Result] is of type [Ok] then [fn] passed into this function is executed. It
+  /// itself needs to return a [Result].
+  /// if this [Result] is of type [Err] than it is returned immediately.
   Result<O2, E> andThen<O2>(Result<O2, E> Function(O ok) fn);
+
+  /// If this [Result] is of type [Ok] then it is returned immediatly.
+  /// Otherwise [fn] is executed and it's [Result] is returned.
   Result<O, E2> orElse<E2>(Result<O, E2> Function(E err) fn);
 }
 

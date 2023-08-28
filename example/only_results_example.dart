@@ -68,3 +68,19 @@ void unwrapIt() {
     print(e);
   }
 }
+
+//////////////////////////////////////////////////////////
+// handling with andThen/OrElse
+//////////////////////////////////////////////////////////
+
+void andThenOrElse() {
+  // results in Ok<int, String>(84)
+  Ok<int, String>(42).andThen((ok) => Ok(ok*2)).orElse((err) => Err("Foo: $err"));
+  // results in Err<int, String>("Foo: bar")
+  Err<int, String>("bar").andThen((ok) => Ok(ok*2)).orElse((err) => Err("Foo: $err"));
+
+  // results in Ok<double, int?>
+  Ok<int, String>(42).andThen((ok) => Ok(ok.toString())).orElse((err) => Err(int.tryParse(err)));
+  // results in Err<double, int?>(42)
+  Err<int, String>("42").andThen((ok) => Ok(ok.toString())).orElse((err) => Err(int.tryParse(err)));
+}
