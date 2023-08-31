@@ -12,6 +12,14 @@ sealed class Result<O, E> {
     }
   }
 
+  static Future<Result<O, Object>> catchErrorsAsync<O>(Future<O> Function() fn) async {
+    try {
+      return Ok(await fn());
+    } catch (e) {
+      return Err(e);
+    }
+  }
+
   bool isErr();
   bool isOk();
 
