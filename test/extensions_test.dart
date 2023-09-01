@@ -10,9 +10,9 @@ void main() {
 
 void extensionTests() {
   setUp(setTestsUp);
-  test("test Future expectAsync", testExpect);
-  test("test Future unwrapAsync", testUnwrap);
-  test("test Future unwrapOrAsync", testUnwrapOrAsync);
+  test("test Future expect", testExpect);
+  test("test Future unwrap", testUnwrap);
+  test("test Future unwrapOr", testUnwrapOr);
 }
 
 void setTestsUp() {
@@ -21,11 +21,11 @@ void setTestsUp() {
 }
 
 Future<void> testExpect() async {
-  expect(await ok.expectAsync("bar"), 42);
+  expect(await ok.expect("bar"), 42);
 
   late String exceptionString;
   try {
-    await err.expectAsync("bar");
+    await err.expect("bar");
   } catch (e) {
     exceptionString = e.toString();
   }
@@ -33,11 +33,11 @@ Future<void> testExpect() async {
 }
 
 Future<void> testUnwrap() async {
-  expect(await ok.unwrapAsync(), 42);
+  expect(await ok.unwrap(), 42);
 
   late String exceptionString;
   try {
-    await err.unwrapAsync();
+    await err.unwrap();
   } catch (e) {
     exceptionString = e.toString();
   }
@@ -45,7 +45,7 @@ Future<void> testUnwrap() async {
   expect(exceptionString, "Exception: fooo");
 }
 
-Future<void> testUnwrapOrAsync() async {
-  expect(await ok.unwrapOrAsync(21), 42);
-  expect(await err.unwrapOrAsync(21), 21);
+Future<void> testUnwrapOr() async {
+  expect(await ok.unwrapOr(21), 42);
+  expect(await err.unwrapOr(21), 21);
 }
