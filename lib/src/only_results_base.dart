@@ -13,7 +13,8 @@ sealed class Result<O, E> {
   }
 
   static Future<Result<O, Object>> catchErrorsAsync<O>(
-      Future<O> Function() fn) async {
+    Future<O> Function() fn,
+  ) async {
     try {
       return Ok(await fn());
     } catch (e) {
@@ -45,7 +46,8 @@ sealed class Result<O, E> {
   /// itself needs to return a [Result].
   /// if this [Result] is of type [Err] than it is returned immediately.
   Future<Result<O2, E>> andThenAsync<O2>(
-      Future<Result<O2, E>> Function(O ok) fn);
+    Future<Result<O2, E>> Function(O ok) fn,
+  );
 
   /// If this [Result] is of type [Ok] then it is returned immediatly.
   /// Otherwise [fn] is executed and it's [Result] is returned.
@@ -54,7 +56,8 @@ sealed class Result<O, E> {
   /// If this [Result] is of type [Ok] then it is returned immediatly.
   /// Otherwise [fn] is executed and it's [Result] is returned.
   Future<Result<O, E2>> orElseAsync<E2>(
-      Future<Result<O, E2>> Function(E err) fn);
+    Future<Result<O, E2>> Function(E err) fn,
+  );
 }
 
 class Ok<O, E> extends Result<O, E> {

@@ -13,6 +13,10 @@ void extensionTests() {
   test("test Future expect", testExpect);
   test("test Future unwrap", testUnwrap);
   test("test Future unwrapOr", testUnwrapOr);
+  test("test Future andThen", testAndThen);
+  test("test Future andThenAsync", testAndThenAsync);
+  test("test Future orElse", testOrElse);
+  test("test Future orElseAsync", testOrElseAsync);
 }
 
 void setTestsUp() {
@@ -48,4 +52,47 @@ Future<void> testUnwrap() async {
 Future<void> testUnwrapOr() async {
   expect(await ok.unwrapOr(21), 42);
   expect(await err.unwrapOr(21), 21);
+}
+
+Future<void> testAndThen() async {
+  expect(await ok.andThen((ok) => Ok(ok.toString())).unwrap(), "42");
+  expect((await err.andThen((ok) => Ok(ok.toString())) as Err).error, "fooo");
+}
+
+Future<void> testAndThenAsync() async {
+  expect(await ok.andThenAsync((ok) async => Ok(ok.toString())).unwrap(), "42");
+  expect((await err.andThenAsync((ok) async => Ok(ok.toString())) as Err).error,
+      "fooo");
+}
+
+Future<void> testOrElse() async {
+  expect(
+    await ok
+        .andThen((ok) => Ok(ok.toString()))
+        .orElse((err) => Ok(err))
+        .unwrap(),
+    "42",
+  );
+  expect(await err
+        .andThen((ok) => Ok(ok.toString()))
+        .orElse((err) => Ok(err))
+        .unwrap(),
+    "fooo",
+  );
+}
+
+Future<void> testOrElseAsync() async {
+  expect(
+    await ok
+        .andThen((ok) => Ok(ok.toString()))
+        .orElseAsync((err) async => Ok(err))
+        .unwrap(),
+    "42",
+  );
+  expect(await err
+        .andThen((ok) => Ok(ok.toString()))
+        .orElseAsync((err) async => Ok(err))
+        .unwrap(),
+    "fooo",
+  );
 }
