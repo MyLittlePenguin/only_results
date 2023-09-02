@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="generator" content="made with love by dartdoc 7.0.0-dev">
+  <meta name="description" content="only_results API docs, for the Dart programming language.">
+  <title>only_results - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li class="self-crumb">only_results package</li>
+  </ol>
+  <div class="self-name">only_results</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        brightness_4
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        brightness_5
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <p>This package is yet another Rust like Result implementation.
+There are already several others and they are basically all the same.
+This isn't much different. Just pick one you like.</p>
+<h2 id="features">Features</h2>
+<p>The Features include the basic functions you would expect:</p>
+<ul>
+<li>expect</li>
+<li>unwrap</li>
+<li>unwrapOr</li>
+<li>andThen</li>
+<li>orElse</li>
+</ul>
+<p>These functions also exist as extension Functions for Futures of Results for Convenience reasons.</p>
+<p>One thing that is special about this implementation, is that you can use the andThen
+and orElse functions to convert a result to a slightly different one.
+This can be usefull wenn you have multiple function calls in one function that return
+different Results. For more details on that have a look at the examples.</p>
+<h2 id="getting-started">Getting started</h2>
+<pre class="language-dart"><code class="language-dart">import "package:only_results/only_results.dart";
+
+var result = Result.catchErrors(() =&gt; unsafeFunction());
+
+switch(result) {
+    case Ok(:void value): 
+        print("it worked =)");
+    case Err(:Object error): 
+        print("=( $error");
+}
+
+</code></pre>
+<h2 id="usage">Usage</h2>
+<p>To use this library you just have to import it into your project and define the return type of your
+functions according to your needs.</p>
+<pre class="language-dart"><code class="language-dart">
+void main() {
+    var a = 42;
+    var b = 10;
+    switch(divide(a, b)) {
+        case Ok(:int value): 
+            print("$a / $b = $value");
+        case Err(:String error):
+            print("ERROR: $error");
+    }
+}
+
+Result&lt;int, String&gt; divide(int a, int b) {
+    if(b == 0) {
+        return Err("divison by zero is not allowed");
+    }
+    return Ok(a ~/ b);
+}
+</code></pre>
+<h3 id="just-handle-the-happy-path">Just handle the Happy Path</h3>
+<p>If you have for example written a function, that you know will, given your specific
+input, always return an Ok of something, you can use either unwrap or expect.</p>
+<pre class="language-dart"><code class="language-dart">void main() {
+    var result = someFunction("Hallo Welt");
+
+    int value = result.unwrap();
+    int value2 = result.expect("Exception Text if result is an Error")
+    int value3 = result.unwrapOr(42);
+}
+
+Result&lt;int, String&gt; someFunction(String value) {
+    ...
+}
+</code></pre>
+<h3 id="handle-the-result-with-andthen--orelse">Handle the Result with andThen / orElse</h3>
+<p>As you have already seen you can use a switch-statement to handle the Result object.
+But you can also use the andThen and orElse function to chain multiple actions
+together.</p>
+<pre class="language-dart"><code class="language-dart">void main() {
+    fn1("Hallo Welt").andThen(fn2).orElse(errHandler);
+    fn1("Hallo Welt").andThen((okValue) =&gt; Ok(okValue / 2));
+}
+
+Result&lt;int, String&gt; fn1(String str) {
+    ...
+}
+
+Result&lt;int, String&gt; fn2(int i) {
+    ...
+}
+
+Result&lt;int, String&gt; errHandler(String str) {
+    ...
+}
+</code></pre>
+<p>You can also use those functions to convert a result to another type of result.</p>
+<pre class="language-dart"><code class="language-dart">Result&lt;int, String&gt; findFirst(List&lt;String&gt; words, String word) {
+  return Result.catchErrors(() =&gt; words.firstWhere((it) =&gt; it == word))
+    .orElse((Object error) =&gt; Err(error.toString()));
+}
+</code></pre>
+<h2 id="additional-information">Additional information</h2>
+<p>If you want to see more examples, have a look at the tests.</p>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="only_results">
+  <span class="name"><a href="only_results/only_results-library.html">only_results</a></span> 
+
+</dt>
+<dd>Support for doing something awesome.
+</dd>
+
+        </dl>
+      </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li class="self-crumb">only_results package</li>
+</ol>
+
+
+    <h5 class="hidden-xs"><span class="package-name">only_results</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="only_results/only_results-library.html">only_results</a></li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+
+</main>
+
+<footer>
+  <span class="no-break">
+    only_results
+      1.0.0
+  </span>
+
+  
+</footer>
+
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+
