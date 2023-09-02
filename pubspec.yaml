@@ -1,7 +1,7 @@
 name: only_results
-description: A starting point for Dart libraries or applications.
+description: A dart implementation of Rusts Result type
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+repository: https://github.com/MyLittlePenguin/only_results
 
 environment:
   sdk: ^3.0.6
