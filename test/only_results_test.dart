@@ -27,7 +27,7 @@ void setTestsUp() {
 }
 
 void testCatchErrorsOnStateError() {
-  var result = Result.catchErrors(() => [1,2,3].firstWhere((it) => it == 2));
+  var result = Result.catchErrors(() => [1, 2, 3].firstWhere((it) => it == 2));
   expect(result.isOk(), true);
   expect(result.isErr(), false);
   expect(result.unwrap(), 2);
@@ -36,7 +36,7 @@ void testCatchErrorsOnStateError() {
 
   expect(result.isErr(), true);
   expect(result.runtimeType.toString(), "Err<int, Object>");
-  expect((result as Err<int, Object>).error.runtimeType.toString(),"StateError");
+  expect((result as Err<int, Object>).error.runtimeType.toString(), "StateError");
 }
 
 void testExpectOk() {
@@ -44,7 +44,6 @@ void testExpectOk() {
 }
 
 void testExpectErr() {
-
   late Exception exception;
   try {
     err.expect("ALARM!!!");
@@ -62,7 +61,7 @@ void testUnwrapErr() {
   late Exception exception;
   try {
     err.unwrap();
-  } catch(e) {
+  } catch (e) {
     exception = e as Exception;
   }
   expect(exception.toString(), "Exception: Foo");

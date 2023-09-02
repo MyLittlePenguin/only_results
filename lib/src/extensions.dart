@@ -1,6 +1,6 @@
 import 'only_results_base.dart';
 
-///This extensions makes it easier to handle the [Result] inside 
+///This extensions makes it easier to handle the [Result] inside
 ///of [Future] objects.
 extension FutureExtensions<O, E> on Future<Result<O, E>> {
   /// awaits the [Future] and executes the expect of the [Result].
@@ -10,8 +10,7 @@ extension FutureExtensions<O, E> on Future<Result<O, E>> {
   Future<O> unwrap() async => (await this).unwrap();
 
   /// awaits the [Future] and executes the unwrapOr of the [Result].
-  Future<O> unwrapOr(O defaultValue) async =>
-      (await this).unwrapOr(defaultValue);
+  Future<O> unwrapOr(O defaultValue) async => (await this).unwrapOr(defaultValue);
 
   /// awaits the [Future] and executes the andThen of the [Result].
   Future<Result<O2, E>> andThen<O2>(Result<O2, E> Function(O ok) fn) async {
