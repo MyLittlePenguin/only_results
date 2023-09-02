@@ -2,3 +2,4 @@
 build/
 .nvim.lua
 pubspec.lock
+doc/api/
