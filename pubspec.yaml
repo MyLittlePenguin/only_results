@@ -1,6 +1,6 @@
 name: only_results
 description: A dart implementation of Rusts Result type
-version: 1.0.1
+version: 1.0.2
 repository: https://github.com/MyLittlePenguin/only_results
 
 platforms:
@@ -13,10 +13,6 @@ platforms:
 
 environment:
   sdk: ^3.0.6
-
-# Add regular dependencies here.
-dependencies:
-  # path: ^1.8.0
 
 dev_dependencies:
   lints: ^2.0.0

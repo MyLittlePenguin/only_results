@@ -9,6 +9,7 @@ The Features include the basic functions you would expect:
 - expect 
 - unwrap
 - unwrapOr
+- unwrapOrElse
 - andThen
 - orElse
 

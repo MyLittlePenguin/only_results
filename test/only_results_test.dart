@@ -16,8 +16,13 @@ void main() {
     test("test Result.isErr", testIsErr);
     test("test Ok.unwrapOr", testUnwrapOrOk);
     test("test Err.unwrapOr", testUnwrapOrErr);
+    test("test Ok.unwrapOrElse", testUnwrapOrElseOk);
+    test("test Err.unwrapOrElse", testUnwrapOrElseErr);
+    test("test Ok.unwrapOrElseAsync", testUnwrapOrElseAsyncOk);
+    test("test Err.unwrapOrElseAsync", testUnwrapOrElseAsyncErr);
     test("test Result.andThen", testAndThen);
     test("test Result.orElse", testOrElse);
+    test("test Result.==", testEquals);
   });
 }
 
@@ -85,6 +90,24 @@ void testUnwrapOrErr() {
   expect(err.unwrapOr(21), 21);
 }
 
+void testUnwrapOrElseOk() {
+  expect(ok.unwrapOrElse(() => 21), 42);
+}
+
+void testUnwrapOrElseErr() {
+  expect(err.unwrapOrElse(() => 21), 21);
+}
+
+void testUnwrapOrElseAsyncOk() async {
+  final result = await ok.unwrapOrElseAsync(() async => 21);
+  expect(result, 42);
+}
+
+void testUnwrapOrElseAsyncErr() async {
+  final result = await err.unwrapOrElseAsync(() async => 21);
+  expectLater(result, 21);
+}
+
 void testAndThen() {
   var result = ok.andThen((ok) => Ok(ok * 2));
 
@@ -115,4 +138,18 @@ void testOrElse() {
 
   var result3 = Ok<int, String>(42).orElse((err) => Ok(21));
   expect(result3.unwrap(), 42);
+}
+
+void testEquals() {
+  expect(Ok<String, String>("yes") == Ok<String, String>("yes"), true);
+  expect(Ok<String, String>("yes") == Ok<String, String>("no"), false);
+  expect(Ok<String, String>("yes") == Ok<String, int>("yes"), false);
+
+  expect(Err<String, String>("yes") == Err<String, String>("yes"), true);
+  expect(Err<String, String>("yes") == Err<String, String>("no"), false);
+  expect(Err<String, String>("yes") == Err<int, String>("yes"), false);
+
+  expect(Ok<String, String>("yes") == Err<String, String>("yes"), false);
+  expect(Ok<String, String>("yes") == Err<String, String>("no"), false);
+  expect(Ok<String, String>("yes") == Err<int, String>("yes"), false);
 }

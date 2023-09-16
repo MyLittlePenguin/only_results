@@ -39,6 +39,15 @@ sealed class Result<O, E> {
   /// is returned instead.
   O unwrapOr(O defaultValue);
 
+  /// Returns the value of an [Ok] object. If it is an [Err] object, it returns
+  /// an alternate value calculated by [fn].
+  O unwrapOrElse(O Function() fn);
+
+  /// Returns the value of an [Ok] object wrapped in a [Future]. If it is an [Err]
+  /// object, it returns an alternate value calculated asynchronously by [fn]
+  /// wrapped in a [Future].
+  Future<O> unwrapOrElseAsync(Future<O> Function() fn);
+
   /// If this [Result] is of type [Ok] then [fn] passed into this function is executed. It
   /// itself needs to return a [Result].
   /// if this [Result] is of typhan it is returned immediately.
@@ -83,6 +92,12 @@ class Ok<O, E> extends Result<O, E> {
   O unwrapOr(O defaultValue) => value;
 
   @override
+  O unwrapOrElse(O Function() fn) => value;
+
+  @override
+  Future<O> unwrapOrElseAsync(Future<O> Function() fn) async => value;
+
+  @override
   Result<O2, E> andThen<O2>(Result<O2, E> Function(O ok) fn) => fn(value);
 
   @override
@@ -100,6 +115,16 @@ class Ok<O, E> extends Result<O, E> {
     Future<Result<O, E2>> Function(E err) fn,
   ) async {
     return Ok(value);
+  }
+
+  @override
+  int get hashCode {
+    return runtimeType.hashCode * 11 + value.hashCode;
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is Ok<O, E> && other.value == value;
   }
 
   @override
@@ -127,6 +152,12 @@ class Err<O, E> extends Result<O, E> {
   O unwrapOr(O defaultValue) => defaultValue;
 
   @override
+  O unwrapOrElse(O Function() fn) => fn();
+
+  @override
+  Future<O> unwrapOrElseAsync(Future<O> Function() fn) async => await fn();
+
+  @override
   Result<O2, E> andThen<O2>(Result<O2, E> Function(O ok) fn) => Err(error);
 
   @override
@@ -144,6 +175,16 @@ class Err<O, E> extends Result<O, E> {
     Future<Result<O, E2>> Function(E err) fn,
   ) async {
     return await fn(error);
+  }
+
+  @override
+  int get hashCode {
+    return runtimeType.hashCode * 11 + error.hashCode;
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is Err<O, E> && other.error == error;
   }
 
   @override

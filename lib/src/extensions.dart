@@ -12,6 +12,13 @@ extension FutureExtensions<O, E> on Future<Result<O, E>> {
   /// awaits the [Future] and executes the unwrapOr of the [Result].
   Future<O> unwrapOr(O defaultValue) async => (await this).unwrapOr(defaultValue);
 
+  /// awaits the [Future] and executes the unwrapOrElse of the [Result].
+  Future<O> unwrapOrElse(O Function() fn) async => (await this).unwrapOrElse(fn);
+
+  /// awaits the [Future] and executes the unwrapOrElseAsync of the [Result].
+  Future<O> unwrapOrElseAsync(Future<O> Function() fn) async =>
+      await (await this).unwrapOrElseAsync(fn);
+
   /// awaits the [Future] and executes the andThen of the [Result].
   Future<Result<O2, E>> andThen<O2>(Result<O2, E> Function(O ok) fn) async {
     return (await this).andThen(fn);
