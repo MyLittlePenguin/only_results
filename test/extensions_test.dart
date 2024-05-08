@@ -17,6 +17,8 @@ void extensionTests() {
   test("test Future andThenAsync", testAndThenAsync);
   test("test Future orElse", testOrElse);
   test("test Future orElseAsync", testOrElseAsync);
+  test("test Iterable whileOk", testWhileOk);
+  test("test Iterable whileOk until it's not", testUntilNotOk);
 }
 
 void setTestsUp() {
@@ -61,27 +63,72 @@ Future<void> testAndThen() async {
 
 Future<void> testAndThenAsync() async {
   expect(await ok.andThenAsync((ok) async => Ok(ok.toString())).unwrap(), "42");
-  expect((await err.andThenAsync((ok) async => Ok(ok.toString())) as Err).error, "fooo");
+  expect((await err.andThenAsync((ok) async => Ok(ok.toString())) as Err).error,
+      "fooo");
 }
 
 Future<void> testOrElse() async {
   expect(
-    await ok.andThen((ok) => Ok(ok.toString())).orElse((err) => Ok(err)).unwrap(),
+    await ok
+        .andThen((ok) => Ok(ok.toString()))
+        .orElse((err) => Ok(err))
+        .unwrap(),
     "42",
   );
   expect(
-    await err.andThen((ok) => Ok(ok.toString())).orElse((err) => Ok(err)).unwrap(),
+    await err
+        .andThen((ok) => Ok(ok.toString()))
+        .orElse((err) => Ok(err))
+        .unwrap(),
     "fooo",
   );
 }
 
 Future<void> testOrElseAsync() async {
   expect(
-    await ok.andThen((ok) => Ok(ok.toString())).orElseAsync((err) async => Ok(err)).unwrap(),
+    await ok
+        .andThen((ok) => Ok(ok.toString()))
+        .orElseAsync((err) async => Ok(err))
+        .unwrap(),
     "42",
   );
   expect(
-    await err.andThen((ok) => Ok(ok.toString())).orElseAsync((err) async => Ok(err)).unwrap(),
+    await err
+        .andThen((ok) => Ok(ok.toString()))
+        .orElseAsync((err) async => Ok(err))
+        .unwrap(),
     "fooo",
+  );
+}
+
+void testWhileOk() {
+  expect(
+    <Result<int, String>>[
+      Ok(1),
+      Ok(2),
+      Ok(3),
+      Ok(4),
+      Ok(5),
+    ].whileOk<int>((lastValue, it) => switch (lastValue) {
+          int value => Ok(value + it),
+          null => Ok(it),
+        }),
+    Ok(15),
+  );
+}
+
+void testUntilNotOk() {
+  expect(
+    <Result<int, String>>[
+      Ok(1),
+      Ok(2),
+      Ok(3),
+      Err("everything sucks"),
+      Ok(5),
+    ].whileOk<int>((lastValue, it) => switch (lastValue) {
+          int value => Ok(value + it),
+          null => Ok(it),
+        }),
+    Err("everything sucks"),
   );
 }
