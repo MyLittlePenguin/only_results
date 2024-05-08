@@ -10,10 +10,12 @@ extension FutureExtensions<O, E> on Future<Result<O, E>> {
   Future<O> unwrap() async => (await this).unwrap();
 
   /// awaits the [Future] and executes the unwrapOr of the [Result].
-  Future<O> unwrapOr(O defaultValue) async => (await this).unwrapOr(defaultValue);
+  Future<O> unwrapOr(O defaultValue) async =>
+      (await this).unwrapOr(defaultValue);
 
   /// awaits the [Future] and executes the unwrapOrElse of the [Result].
-  Future<O> unwrapOrElse(O Function() fn) async => (await this).unwrapOrElse(fn);
+  Future<O> unwrapOrElse(O Function() fn) async =>
+      (await this).unwrapOrElse(fn);
 
   /// awaits the [Future] and executes the unwrapOrElseAsync of the [Result].
   Future<O> unwrapOrElseAsync(Future<O> Function() fn) async =>
@@ -41,5 +43,26 @@ extension FutureExtensions<O, E> on Future<Result<O, E>> {
     Future<Result<O, E2>> Function(E err) fn,
   ) async {
     return await (await this).orElseAsync(fn);
+  }
+}
+
+extension IterableExtensions<L, E> on Iterable<Result<L, E>> {
+  /// __EXPERIMENTAL:__ might change in the Future.
+  ///
+  /// executes the Function [fn] for every element in the iterable for as long
+  /// as there are any and the [Result] of fn isn't an [Err].
+  Result<O, E>? whileOk<O>(Result<O, E> Function(O? lastValue, L it) fn) {
+    Result<O, E>? last;
+
+    final iter = iterator;
+    while (iter.moveNext() && last is Ok<O, E>?) {
+      switch (iter.current) {
+        case Ok(value: final it):
+          last = fn(last?.value, it);
+        case Err(:final error):
+          return Err(error);
+      }
+    }
+    return last;
   }
 }
