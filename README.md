@@ -1,6 +1,8 @@
-This package is yet another Rust like Result implementation. 
+This package is yet another Rust like Result implementation.
 There are already several others and they are basically all the same.
 This isn't much different. Just pick one you like.
+
+This package is pretty much stable and will probably not be subject to breaking changes.
 
 ## Features
 

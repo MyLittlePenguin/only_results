@@ -41,7 +41,8 @@ void testCatchErrorsOnStateError() {
 
   expect(result.isErr(), true);
   expect(result.runtimeType.toString(), "Err<int, Object>");
-  expect((result as Err<int, Object>).error.runtimeType.toString(), "StateError");
+  expect(
+      (result as Err<int, Object>).error.runtimeType.toString(), "StateError");
 }
 
 void testExpectOk() {
